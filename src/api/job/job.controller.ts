@@ -77,7 +77,9 @@ const GET_ALL_JOBS_FROM_DB = handleAsync(async (req, res) => {
   // query all job post from database
 
   const result = await db.query.jobs.findMany({
-    where: (jobs, { eq, like }) => like(jobs.title, `%${keywords as string}%`),
+    where: keywords
+      ? (jobs, { eq, like }) => like(jobs.title, `%${keywords as string}%`)
+      : {},
     with: {
       salaries: true,
       requirements: true,
