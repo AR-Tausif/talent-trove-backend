@@ -22,12 +22,10 @@ const jobSchema = z.object({
   }),
 });
 
-const requirementSchema = z.object({
-  requirement: z
-    .string()
-    .min(1, "Requirement cannot be empty")
-    .max(500, "Requirement should not exceed 500 characters"),
-});
+const requirementSchema = z
+  .string()
+  .min(1, "Requirement cannot be empty")
+  .max(500, "Requirement should not exceed 500 characters");
 
 const salarySchema = z.object({
   minSalary: z
@@ -37,15 +35,14 @@ const salarySchema = z.object({
   maxSalary: z.number(),
   currency: z
     .string()
-    .length(3, "Currency must be a 3-letter ISO code (e.g., 'USD')"),
+    .length(3, "Currency must be a 3-letter ISO code (e.g., 'USD')")
+    .optional(),
 });
 
-const tagSchema = z.object({
-  tag: z
-    .string()
-    .min(1, "Tag cannot be empty")
-    .max(100, "Tag should not exceed 100 characters"),
-});
+const tagSchema = z
+  .string()
+  .min(1, "Tag cannot be empty")
+  .max(100, "Tag should not exceed 100 characters");
 
 const createJobSchema = z.object({
   data: z.object({
@@ -55,7 +52,7 @@ const createJobSchema = z.object({
       .min(1, "At least one requirement is required")
       .optional(),
     salary: salarySchema.optional(),
-    tags: z.array(tagSchema).optional(),
+    tag: z.array(tagSchema).optional(),
   }),
 });
 

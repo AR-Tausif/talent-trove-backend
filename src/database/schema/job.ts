@@ -8,7 +8,6 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { companies } from "./company";
 import { jobRequirements } from "./jobRequirement";
 import { jobSalaries } from "./jobSalary";
 import { jobTags } from "./jobTag";
@@ -25,12 +24,10 @@ export const jobs = pgTable("jobs", {
   createdBy: integer("created_by")
     .notNull()
     .references(() => users.id),
-  createdAt: timestamp("created_at", { withTimezone: true }).default(
-    sql`now()`,
-  ),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).default(
-    sql`now()`,
-  ),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const jobRelations = relations(jobs, ({ many, one }) => ({

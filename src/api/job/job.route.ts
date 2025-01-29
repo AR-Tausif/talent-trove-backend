@@ -13,7 +13,7 @@ router.get("/:jobId", JobController.GET_SINGLE_JOB_POST_BY_ID);
 
 // EMPLOYEE ACCCES
 router.post(
-  "/",
+  "/create-job",
   zodValidator(JobValidationSchema.createJobSchema),
   auth(),
   JobController.CREATE_JOB_INTO_DB,

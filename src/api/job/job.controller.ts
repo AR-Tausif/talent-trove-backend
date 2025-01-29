@@ -13,7 +13,7 @@ import { IJobRequirement, TJobTags } from "./job.type";
 
 const CREATE_JOB_INTO_DB = handleAsync(async (req, res) => {
   const { userId } = req.user;
-  const { job, requirements, salary, tags } = req.body.data;
+  const { job, requirements, salary, tag } = req.body.data;
   console.log(req.body);
   let result;
   // Start a transaction of Drizzle ORM
@@ -39,9 +39,9 @@ const CREATE_JOB_INTO_DB = handleAsync(async (req, res) => {
     // Insert requirements, if provided
     if (requirements && requirements.length > 0) {
       await tx.insert(jobRequirements).values(
-        requirements.map((req: IJobRequirement) => ({
+        requirements.map((requirement: string) => ({
           jobId,
-          requirement: req.requirement,
+          requirement: requirement,
         })),
       );
     }
@@ -57,10 +57,10 @@ const CREATE_JOB_INTO_DB = handleAsync(async (req, res) => {
     }
 
     // Insert tags, if provided
-    if (tags && tags.length > 0) {
+    if (tag && tag.length > 0) {
       await tx
         .insert(jobTags)
-        .values(tags.map((tag: TJobTags) => ({ jobId, tag: tag.tag })));
+        .values(tag.map((t: string) => ({ jobId, tag: t })));
     }
   });
 
@@ -77,9 +77,8 @@ const GET_ALL_JOBS_FROM_DB = handleAsync(async (req, res) => {
   // query all job post from database
 
   const result = await db.query.jobs.findMany({
-    where: keywords
-      ? (jobs, { eq, like }) => like(jobs.title, `%${keywords as string}%`)
-      : {},
+    where: (jobs, { eq, like }) =>
+      keywords ? like(jobs.title, `%${keywords as string}%`) : undefined,
     with: {
       salaries: true,
       requirements: true,
