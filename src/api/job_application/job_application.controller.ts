@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../../database";
 import { jobApplications } from "../../database/schema";
-import { handleAsync, HttpStatus } from "../../utils";
+import { CustomError, handleAsync, HttpStatus } from "../../utils";
 import formatedResponse from "../../utils/formatedResponse";
 
 // **handleAsync()** utils function. This funciton handles dynamicly try().catch() blocks
@@ -9,13 +9,30 @@ const CREATE_JOB_APPLICATION_INTO_DB = handleAsync(async (req, res) => {
   console.log("user");
   const { userId } = req.user;
   const { jobId, coverLetter } = req.body.data;
-
+  const application = await db
+    .select()
+    .from(jobApplications)
+    .where(
+      and(
+        eq(jobApplications.jobId, Number(jobId)),
+        eq(jobApplications.userId, Number(userId)),
+      ),
+    );
+  if (application) {
+    throw new CustomError(HttpStatus.BAD_REQUEST, "this job already exist");
+  }
   // applied to a job
-  const result = await db.insert(jobApplications).values({
-    userId: Number(userId),
-    jobId,
-    coverLetter,
-  });
+  const result = await db
+    .insert(jobApplications)
+    .values({
+      userId: Number(userId),
+      jobId,
+      coverLetter,
+    })
+    .returning({
+      jobId: jobApplications.jobId,
+      userId: jobApplications.userId,
+    });
 
   // sending response to client
   formatedResponse(res, {

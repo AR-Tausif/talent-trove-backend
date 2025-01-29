@@ -119,8 +119,34 @@ const GET_SINGLE_JOB_POST_BY_ID = handleAsync(async (req, res) => {
   });
 });
 
+const GET_ALL_JOB_POSTS_BY_EMPLOYE_ID = handleAsync(async (req, res) => {
+  // getting the router param of job post id
+  const EMPLOYEE_ID = Number(req.user.userId);
+
+  if (isNaN(EMPLOYEE_ID)) {
+    throw new CustomError(HttpStatus.BAD_REQUEST, "Invalid job ID");
+  }
+  // query a single job post
+  const result = await db.query.jobs.findMany({
+    where: (jobs, { eq }) => eq(jobs.createdBy, Number(EMPLOYEE_ID)),
+    with: {
+      salaries: true,
+      requirements: true,
+      tags: true,
+    },
+  });
+
+  // sending response to client
+  formatedResponse(res, {
+    statusCode: HttpStatus.OK,
+    data: result,
+    message: "jobs retrived!",
+  });
+});
+
 export const JobController = {
   CREATE_JOB_INTO_DB,
   GET_ALL_JOBS_FROM_DB,
   GET_SINGLE_JOB_POST_BY_ID,
+  GET_ALL_JOB_POSTS_BY_EMPLOYE_ID,
 };

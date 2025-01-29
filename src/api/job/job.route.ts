@@ -18,6 +18,11 @@ router.post(
   auth(),
   JobController.CREATE_JOB_INTO_DB,
 );
+router.get(
+  "/employee/all",
+  auth(AUTH_RULES.EMPLOYEER),
+  JobController.GET_ALL_JOB_POSTS_BY_EMPLOYE_ID,
+);
 
 // JOB_SEEKER ACCCES
 
