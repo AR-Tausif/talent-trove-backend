@@ -1,5 +1,8 @@
 # Talent Trove. Hiring Management Application
 
+## Postman documentation. [click here](https://documenter.getpostman.com/view/30147054/2sB2ixjtd2) to view endpoints
+https://documenter.getpostman.com/view/30147054/2sB2ixjtd2
+
 ### Features
 
 ![image](https://github.com/user-attachments/assets/1b77f41e-dc31-4243-8b59-fec212488ee7)
